@@ -23,6 +23,6 @@ workspace "LibYAML"
 
     include "LibYAML"
     include "consumer/SystemBootConfig"
-    include "App"
+    include "App/c"
 
     links {"LibYAML", "App", "SystemBootConfig"}
