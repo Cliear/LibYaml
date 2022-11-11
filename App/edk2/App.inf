@@ -17,6 +17,7 @@
     UefiApplicationEntryPoint
     SystemBootConfig
     UefiLib
+    BaseCpuLib
 
 [Protocols]
 #    gEfiGraphicsOutputProtocolGuid

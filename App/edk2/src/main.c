@@ -1,5 +1,6 @@
 #include <Uefi.h>
 #include <Library/UefiLib.h>
+#include <Library/CpuLib.h>
 
 #include <yaml.h>
 #include <SystemBootConfig.h>
@@ -65,6 +66,7 @@ EFI_STATUS UefiMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
     Print(L"Work is end!\n");
 
 ERROR:
+    CpuSleep();
     CpuDeadLoop();
     return EFI_SUCCESS;
 }
