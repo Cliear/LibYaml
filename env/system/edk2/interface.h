@@ -87,7 +87,7 @@ static inline void *ReAllocMemory(void *buffer, UINTN size)
     UINTN                        real_size  = size + sizeof(InterfaceInternalMemoryType);
     InterfaceInternalMemoryType *memory_src = BaseAllocMemoryAddress(buffer);
     InterfaceInternalMemoryType *memory =
-        (InterfaceInternalMemoryType *)ReallocatePool(memory_src->size, real_size, memory_src->data);
+        (InterfaceInternalMemoryType *)ReallocatePool(memory_src->size, real_size, memory_src);
     if (memory)
     {
         memory->size = real_size;

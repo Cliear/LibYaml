@@ -1,5 +1,4 @@
 #include <Uefi.h>
-#include <Library/BaseLib.h>
 #include <Library/UefiLib.h>
 
 #include <yaml.h>
@@ -16,72 +15,56 @@ char data[] =
   - \n\
     name: Boot\n\
     Path: abc/def.ddd\n\
-    MemoryLocate: 0x100000";
+    MemoryLocate: 0x200000";
 
 CHAR16 buffer[1024];
 
 EFI_STATUS UefiMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
 {
-    SystemTable->ConOut->OutputString(SystemTable->ConOut, L"Enter UEFI Successfully\n");
-
     yaml_parser_t parser;
     yaml_event_t event;
+
+    init_consumer();
     yaml_parser_initialize(&parser);
 
     yaml_parser_set_input_string(&parser, data, sizeof(data) - 1);
     State state = STATE_START;
-    init_consumer();
-
     do
     {
-        Print(L"%d\n", __LINE__);
         int status = yaml_parser_parse(&parser, &event);
-        Print(L"%d\n", __LINE__);
         if (status == 0)
         {
-            Print(L"%d\n", __LINE__);
-            SystemTable->ConOut->OutputString(SystemTable->ConOut, L"yaml_parser_parse error\n");
+            ErrorPrint(L"yaml_parser_parse error in line %d\n", __LINE__ - 3);
             goto ERROR;
         }
-        Print(L"%d\n", __LINE__);
         state = consumer_imp.handle(&consumer_imp, &event);
-        Print(L"%d\n", __LINE__);
         if (status == 0)
         {
-            Print(L"%d\n", __LINE__);
-            SystemTable->ConOut->OutputString(SystemTable->ConOut, L"consume_event error\n");
+            ErrorPrint(L"consume_event error %d\n", __LINE__ - 3);
             goto ERROR;
         }
-        Print(L"%d %d\n", __LINE__, status);
-        Print(L"One loop end! The status is %d, loop exp is (%d, %d, %d)\n", 
-                state, state != STATE_ERROR, state != STATE_END, state != STATE_ERROR && state != STATE_END);
-        Print(L"STATE_ERROR is %d, STATE_END is %d, status is %d\n", STATE_ERROR, STATE_END, state);
         yaml_event_delete(&event);
     } while (state != STATE_ERROR && state != STATE_END);
 
+    Print(L"There are the yaml information:\n");
+
     LoadConfig * config = (LoadConfig *)consumer_imp.data;
+    Print(L"The config start file name is %a\n", config->start_file_name);
 
-    AsciiStrToUnicodeStr(config->start_file_name, buffer);
-    Print(L"Start parser the yaml\n");
-    Print(L"The Config ptr is %p\n", config);
-
+    Print(L"There are the data of loading file:\n");
     LoadFiles * files = config->files;
     while (files)
     {
-        AsciiStrToUnicodeStr(files->name, buffer);
-        SystemTable->ConOut->OutputString(SystemTable->ConOut, buffer);
-        AsciiStrToUnicodeStr(files->path, buffer);
-        SystemTable->ConOut->OutputString(SystemTable->ConOut, buffer);
-        
-        SystemTable->ConOut->OutputString(SystemTable->ConOut, L"file end!\n");
+        Print(L"name:%a path: %a locate: %d\n", files->name, files->path, files->memory_locate);
+        files = files->next;
     }
-    
-    SystemTable->ConOut->OutputString(SystemTable->ConOut, L"Ok!\n");
+    Print(L"No more information! Start clear env\n");
     clear_consumer();
     yaml_parser_delete(&parser);
 
+    Print(L"Work is end!\n");
+
 ERROR:
     CpuDeadLoop();
-    SystemTable->ConOut->OutputString(SystemTable->ConOut, L"Hear\n");
     return EFI_SUCCESS;
 }
