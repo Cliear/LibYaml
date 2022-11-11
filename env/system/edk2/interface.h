@@ -4,18 +4,30 @@
 #include <Uefi.h>
 
 #include <Library/BaseLib.h>
+#include <Library/BaseMemoryLib.h>
 #include <Library/PrintLib.h>
 #include <Library/DebugLib.h>
 #include <Library/MemoryAllocationLib.h>
 #include <Protocol/SimpleFileSystem.h>
 
 #define INT_MAX_MACRO                 (~0u >> 1)
-#define SIZE_T_MACRO                  INTN
+#define SIZE_T_MACRO                  UINTN
 #define UINTPTR_T_MACRO               PHYSICAL_ADDRESS
 #define PTR_DIFF_T_MACRO              INTN
 #define OFFSET_OF_MACRO(type, member) OFFSET_OF(type, member)
 #define ASSERT_MACRO(value)           ASSERT(value)
 #define ASSERT_STATUS_MACRO(value)    ASSERT_EFI_ERROR(value)
+
+static inline char *strdup_internel_imp(const char *s1);
+
+#define MemSetMacro(buffer, value, length) SetMem(buffer, length, value)
+#define MemCpyMacro(des, src, length)      CopyMem(des, src, (UINTN)(length))
+#define MemMoveMacro(des, src, length)     CopyMem(des, src, (UINTN)(length))
+#define MemCmpMacro(s1, s2, num)           ((int)CompareMem(s1, s2, (UINTN)num))
+#define StrLenMacro(str)                   AsciiStrLen(str)
+#define StrDupMacro(str)                   strdup_internel_imp(str)
+#define StrCmpMacro(s1, s2)                AsciiStrCmp(s1, s2)
+#define StrNCmpMacro(s1, s2, n)            AsciiStrnCmp(s1, s2, n)
 
 typedef EFI_FILE_HANDLE FileHandle;
 #define FileHandleTypeMacro FileHandle
@@ -92,7 +104,21 @@ static inline void FreeMemory(void *buffer)
 }
 #define FreeMemoryMacro(buffer) FreeMemory(buffer)
 
+static inline char *strdup_internel_imp(const char *s1)
+{
+    register char        *s;
+    register SIZE_T_MACRO l = (StrLenMacro(s1) + 1) * sizeof(char);
+
+    if ((s = AllocMemoryMacro(l)) != NULL)
+    {
+        MemCpyMacro(s, s1, l);
+    }
+
+    return s;
+}
+
 #define StringToInter(str) AsciiStrDecimalToUint64(str)
+#define HexStringToInter(str) AsciiStrHexToUintn(str)
 #define StringSafePrintf(buffer, size, format, ...) AsciiSPrint(buffer, size, format, __VA_ARGS__)
 
 #endif

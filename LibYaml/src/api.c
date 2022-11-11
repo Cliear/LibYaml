@@ -1,7 +1,5 @@
-
 #include "yaml_private.h"
 #include <interface.h>
-// #include <lib.h>
 
 #ifndef YAML_VERSION_STRING
 #define YAML_VERSION_STRING "0.0.0"
