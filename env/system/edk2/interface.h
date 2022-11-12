@@ -54,14 +54,14 @@ static inline SIZE_T_MACRO WriteToFile(FileHandleTypeMacro file_handle, UINTN el
     WriteToFile(file_handle, element_size, element_nums, buffer)
 
 static inline SIZE_T_MACRO ReadFromFile(FileHandleTypeMacro file_handle, UINTN element_size, UINTN element_nums,
-                                        void *buffer)
+                                        void *buffer, SIZE_T_MACRO * nread)
 {
-    UINTN      size   = element_size * element_nums;
-    EFI_STATUS status = file_handle->Read(file_handle, &size, buffer);
+    *nread   = element_size * element_nums;
+    EFI_STATUS status = file_handle->Read(file_handle, nread, buffer);
     return status;
 }
-#define ReadFromFileMacro(file_handle, element_size, element_nums, buffer)                                             \
-    ReadFromFile(file_handle, element_size, element_nums, buffer)
+#define ReadFromFileMacro(file_handle, element_size, element_nums, buffer, nread)                                             \
+    ReadFromFile(file_handle, element_size, element_nums, buffer, (nread))
 
 static inline int FileOpIsError(SIZE_T_MACRO retval, FileHandle file)
 {

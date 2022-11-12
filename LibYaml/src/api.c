@@ -293,8 +293,10 @@ static int yaml_file_read_handler(void *data, unsigned char *buffer, SIZE_T_MACR
 {
     yaml_parser_t *parser = (yaml_parser_t *)data;
 
-    *size_read            = ReadFromFileMacro(parser->input.file, 1, size, buffer);
-    return FileOpIsSuccessfulMacro(*size_read, parser->input.file);
+    SIZE_T_MACRO nread = 0;
+    SIZE_T_MACRO retval = ReadFromFileMacro(parser->input.file, 1, size, buffer, &nread);
+    *size_read = nread;
+    return FileOpIsSuccessfulMacro(retval, parser->input.file);
 }
 
 /*

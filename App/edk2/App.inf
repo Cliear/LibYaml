@@ -18,10 +18,11 @@
     SystemBootConfig
     UefiLib
     BaseCpuLib
+    UefiBootServicesTableLib
 
 [Protocols]
 #    gEfiGraphicsOutputProtocolGuid
-#    gEfiSimpleFileSystemProtocolGuid
+    gEfiSimpleFileSystemProtocolGuid
 #    gEfiAcpiTableProtocolGuid
 
 [Guids]
