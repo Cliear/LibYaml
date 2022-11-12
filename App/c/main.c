@@ -5,20 +5,6 @@
 #include <yaml.h>
 #include <SystemBootConfig.h>
 
-
-char data[] =
-"LoadFiles:\n\
-  StartFile: System\n\
-  Files:\n\
-  - \n\
-    name: System\n\
-    Path: abc/def.ddd\n\
-    MemoryLocate: 0x100000\n\
-  - \n\
-    name: Boot\n\
-    Path: abc/def.ddd\n\
-    MemoryLocate: 0x100000";
-
 int main(int argc, char *argv[])
 {
     int code;
@@ -29,7 +15,7 @@ int main(int argc, char *argv[])
     FILE * file;
     if(argc == 1)
     {
-        file = fopen("D:/2022/C/yaml/yaml/system_boot.yaml", "r");
+        file = fopen("system_boot.yaml", "r");
     }
     else
     {
@@ -40,7 +26,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Open File Failed!\n");
         return 0;
     }
-    yaml_parser_set_input_string(&parser, (unsigned char *)data, sizeof(data) - 1);
+    yaml_parser_set_input_file(&parser, file);
     State state = STATE_START;
     init_consumer();
     do
@@ -63,15 +49,17 @@ int main(int argc, char *argv[])
         yaml_event_delete(&event);
     } while (state != STATE_ERROR && state != STATE_END);
 
-    // /* Output the parsed data. */
-    // for (struct Fruit *f = state.flist; f; f = f->next)
-    // {
-    //     printf("fruit: name=%s, color=%s, count=%d\n", f->name, f->color, f->count);
-    //     for (struct variety *v = f->varieties; v; v = v->next)
-    //     {
-    //         printf("  variety: name=%s, color=%s, seedless=%s\n", v->name, v->color, v->seedless ? "true" : "false");
-    //     }
-    // }
+    /* Output the parsed data. */
+    LoadConfig * config = (LoadConfig *)consumer_imp.data;
+    printf("The config start file name is %s\n", config->start_file_name);
+
+    printf("There are the data of loading file:\n");
+    LoadFiles * files = config->files;
+    while (files)
+    {
+        printf("name:%s path: %s locate: %zu\n", files->name, files->path, files->memory_locate);
+        files = files->next;
+    }
     code = EXIT_SUCCESS;
     fclose(file);
 

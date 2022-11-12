@@ -1,0 +1,10 @@
+CompileFlags:
+  Add:
+    - -I./LibYaml/include/          # replace the '.' into your work path
+    - -I./consumer/SystemBootConfig/include/
+    - -I./env/system/c_language_env/
+    - -DYAML_VERSION_STRING="0.0.0"
+    - -DYAML_VERSION_MAJOR=0
+    - -DYAML_VERSION_MINOR=0
+    - -DYAML_VERSION_PATCH=0
+    - -DLIBYAML_C_LANGAUAGE_ENV

@@ -37,12 +37,12 @@ static inline SIZE_T_MACRO WriteToFile(FileHandleTypeMacro file_handle, SIZE_T_M
     WriteToFile(file_handle, element_size, element_nums, buffer)
 
 static inline SIZE_T_MACRO ReadFromFile(FileHandleTypeMacro file_handle, SIZE_T_MACRO element_size,
-                                        SIZE_T_MACRO element_nums, void *buffer)
+                                        SIZE_T_MACRO element_nums, void *buffer, SIZE_T_MACRO * nread)
 {
-    return fread(buffer, element_size, element_nums, (FILE *)file_handle);
+    return *nread = fread(buffer, element_size, element_nums, (FILE *)file_handle);
 }
-#define ReadFromFileMacro(file_handle, element_size, element_nums, buffer)                                             \
-    ReadFromFile(file_handle, element_size, element_nums, buffer)
+#define ReadFromFileMacro(file_handle, element_size, element_nums, buffer, nread)                                             \
+    ReadFromFile(file_handle, element_size, element_nums, buffer, (nread))
 
 static inline SIZE_T_MACRO FileOpIsError(SIZE_T_MACRO retval, FileHandle file)
 {
