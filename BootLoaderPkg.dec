@@ -1,0 +1,10 @@
+[Defines]
+    DEC_SPECIFICATION   = 0x00010005
+    PACKAGE_NAME        = BootLoaderPkg
+    PACKAGE_GUID        = 66CE9F8F-185C-AB32-3118-7EE7CD4D6D8B
+    PACKAGE_BERSION     = 0.1
+
+[Includes]
+    env/system/edk2
+    consumer/SystemBootConfig/include
+    LibYaml/include

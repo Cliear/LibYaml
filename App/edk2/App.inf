@@ -1,0 +1,29 @@
+[Defines]
+    INF_VERSION     = 0x00010005
+    BASE_NAME       = bootx64
+    FILE_GUID       = D68618AB-6989-560B-49A6-E761AC17A70C
+    MODULE_TYPE     = UEFI_APPLICATION
+    VERSION_STRING  = 1.0
+    ENTRY_POINT     = UefiMain
+
+[Sources]
+    src/main.c
+
+[Packages]
+    MdePkg/MdePkg.dec
+    BootLoaderPkg/BootLoaderPkg.dec
+
+[LibraryClasses]
+    UefiApplicationEntryPoint
+    SystemBootConfig
+    UefiLib
+    BaseCpuLib
+    UefiBootServicesTableLib
+
+[Protocols]
+#    gEfiGraphicsOutputProtocolGuid
+    gEfiSimpleFileSystemProtocolGuid
+#    gEfiAcpiTableProtocolGuid
+
+[Guids]
+#    gEfiFileInfoGuid

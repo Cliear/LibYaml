@@ -1,0 +1,25 @@
+[Defines]
+    INF_VERSION     = 0x00010005
+    BASE_NAME       = LibYaml
+    FILE_GUID       = D57BB1E3-06F6-FFE4-83E3-41EB3A8BC1C3
+    MODULE_TYPE     = BASE
+    VERSION_STRING  = 1.0
+    LIBRARY_CLASS   = LibYaml
+
+[Sources]
+    src/api.c
+    src/dumper.c
+    src/emitter.c
+    src/loader.c
+    src/parser.c
+    src/reader.c
+    src/scanner.c
+    src/writer.c
+
+[Packages]
+    MdePkg/MdePkg.dec
+    BootLoaderPkg/BootLoaderPkg.dec
+    
+[LibraryClasses]
+    PrintLib
+    MemoryAllocationLib

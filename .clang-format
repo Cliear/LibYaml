@@ -1,0 +1,24 @@
+# # LLVM, Google, Chromium, Mozilla, WebKit, Microsoft, GNU, IngeritParentConfig
+BasedOnStyle: Microsoft
+
+IndentCaseLabels: true
+
+BreakBeforeBraces : Allman
+
+AlignArrayOfStructures : Left
+
+AllowShortCaseLabelsOnASingleLine : true
+
+AlignConsecutiveAssignments :
+    Enabled         : true
+    AlignCompound   : true
+    PadOperators    : true
+    AcrossEmptyLines: true
+    AcrossComments  : false
+AlignConsecutiveDeclarations:  # or use 'AcrossEmptyLinesAndComments'
+    Enabled         : true
+    AcrossComments  : true
+
+AlignConsecutiveMacros:         AcrossEmptyLinesAndComments
+
+
