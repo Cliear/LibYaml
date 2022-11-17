@@ -1,10 +1,10 @@
 [Defines]
     INF_VERSION     = 0x00010005
-    BASE_NAME       = bootx64
-    FILE_GUID       = D68618AB-6989-560B-49A6-E761AC17A70C
-    MODULE_TYPE     = UEFI_APPLICATION
+    BASE_NAME       = MemoryInfo
+    FILE_GUID       = 782A094D-AAA1-4169-98C5-C3AB4EB4FE06
+    MODULE_TYPE     = BASE
     VERSION_STRING  = 1.0
-    ENTRY_POINT     = UefiMain
+    LIBRARY_CLASS   = MemoryInfo
 
 [Sources]
     src/main.c
@@ -14,15 +14,12 @@
     BootLoaderPkg/BootLoaderPkg.dec
 
 [LibraryClasses]
-    UefiApplicationEntryPoint
-    SystemBootConfig
     UefiLib
-    BaseCpuLib
     UefiBootServicesTableLib
 
 [Protocols]
 #    gEfiGraphicsOutputProtocolGuid
-    gEfiSimpleFileSystemProtocolGuid
+#    gEfiSimpleFileSystemProtocolGuid
 #    gEfiAcpiTableProtocolGuid
 
 [Guids]

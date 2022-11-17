@@ -5,6 +5,9 @@
     PACKAGE_BERSION     = 0.1
 
 [Includes]
-    env/system/edk2
-    consumer/SystemBootConfig/include
-    LibYaml/include
+    BootApp/env/system/edk2
+    BootApp/consumer/SystemBootConfig/include
+    BootApp/LibYaml/include
+    env/edk2
+    MemoryInfo/include
+    MemoryInfo/edk2_include

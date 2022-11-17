@@ -9,9 +9,11 @@
     SKUID_IDENTIFIER        = DEFAULT
 
 [Components]
-    BootLoaderPkg/App/edk2/App.inf
-    BootLoaderPkg/consumer/SystemBootConfig/SystemBootConfig.inf
-    BootLoaderPkg/LibYaml/LibYaml.inf
+    BootLoaderPkg/BootApp/App/edk2/App.inf
+    BootLoaderPkg/BootApp/consumer/SystemBootConfig/SystemBootConfig.inf
+    BootLoaderPkg/BootApp/LibYaml/LibYaml.inf
+
+    BootLoaderPkg/MemoryInfo/memory_info.inf
 
 [LibraryClasses]
     UefiApplicationEntryPoint|MdePkg/Library/UefiApplicationEntryPoint/UefiApplicationEntryPoint.inf
@@ -26,8 +28,8 @@
     PcdLib|MdePkg/Library/BasePcdLibNull/BasePcdLibNull.inf
     BaseMemoryLib|MdePkg/Library/BaseMemoryLib/BaseMemoryLib.inf
 
-    LibYaml|BootLoaderPkg/LibYaml/LibYaml.inf
-    SystemBootConfig|BootLoaderPkg/consumer/SystemBootConfig/SystemBootConfig.inf
+    LibYaml|BootLoaderPkg/BootApp/LibYaml/LibYaml.inf
+    SystemBootConfig|BootLoaderPkg/BootApp//consumer/SystemBootConfig/SystemBootConfig.inf
 
     MemoryAllocationLib|MdePkg/Library/UefiMemoryAllocationLib/UefiMemoryAllocationLib.inf
     PrintLib|MdePkg\Library\BasePrintLib\BasePrintLib.inf
@@ -38,3 +40,5 @@
     UefiRuntimeServicesTableLib|MdePkg/Library/UefiRuntimeServicesTableLib/UefiRuntimeServicesTableLib.inf
 
     BaseCpuLib|MdePkg/Library/BaseCpuLib/BaseCpuLib.inf
+
+    MemoryInfo|BootLoaderPkg/MemoryInfo/memory_info.inf
