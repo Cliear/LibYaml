@@ -21,8 +21,8 @@ workspace "LibYAML"
         optimize "On"
     filter {}
 
-    include "LibYAML"
-    include "consumer/SystemBootConfig"
-    include "App/c"
+    include "BootApp/LibYAML"
+    include "BootApp/consumer/SystemBootConfig"
+    include "BootApp/App/c"
 
     links {"LibYAML", "App", "SystemBootConfig"}

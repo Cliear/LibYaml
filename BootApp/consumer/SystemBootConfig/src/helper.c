@@ -70,17 +70,23 @@ void add_file(LoadFiles **files, const char *name, const char *path, UINTPTR_T_M
 
 void destroy_files(LoadFiles **files)
 {
-    for (LoadFiles *v = *files; v; v = *files)
+    if (*files != NULL)
     {
-        *files = v->next;
-        FreeMemoryMacro((void *)(v->name));
-        FreeMemoryMacro((void *)(v->path));
-        FreeMemoryMacro(v);
+        for (LoadFiles *v = *files; v; v = *files)
+        {
+            *files = v->next;
+            FreeMemoryMacro((void *)(v->name));
+            FreeMemoryMacro((void *)(v->path));
+            FreeMemoryMacro(v);
+        }
     }
 }
 
 void destroy_load_config(LoadConfig **config)
 {
-    destroy_files(&(*config)->files);
-    FreeMemoryMacro((void *)((*config)->start_file_name));
+    if (*config != NULL)
+    {
+        destroy_files(&(*config)->files);
+        FreeMemoryMacro((void *)((*config)->start_file_name));
+    }
 }

@@ -7,12 +7,12 @@ files {"**.h", "**.c"}
 
 includedirs
 {
-    "%{_WORKING_DIR}/LibYaml/include",
-    "%{_WORKING_DIR}/consumer/SystemBootConfig/include",
+    "%{_WORKING_DIR}/BootApp/LibYaml/include",
+    "%{_WORKING_DIR}/BootApp/consumer/SystemBootConfig/include",
 }
 
 filter "platforms:env_c"
-includedirs {"%{_WORKING_DIR}/env/system/c_language_env",}
+includedirs {"%{_WORKING_DIR}/BootApp/env/system/c_language_env",}
 filter "platforms:env_UEFI"
-includedirs {"%{_WORKING_DIR}/env/system/edk2",}
+includedirs {"%{_WORKING_DIR}/BootApp/env/system/edk2",}
 filter {}
