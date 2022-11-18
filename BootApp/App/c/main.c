@@ -50,7 +50,8 @@ int main(int argc, char *argv[])
     } while (state != STATE_ERROR && state != STATE_END);
 
     /* Output the parsed data. */
-    LoadConfig * config = (LoadConfig *)consumer_imp.data;
+    SystemBootConfig * system_boot_config = (SystemBootConfig *)consumer_imp.data;
+    LoadConfig * config = system_boot_config->load_config;
     printf("The config start file name is %s\n", config->start_file_name);
 
     printf("There are the data of loading file:\n");

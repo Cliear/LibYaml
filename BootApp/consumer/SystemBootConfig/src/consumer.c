@@ -1,3 +1,4 @@
+#include "SystemBootConfig.h"
 #include "helper.h"
 #include "yaml_event_consumer.h"
 #include <interface.h>
@@ -9,6 +10,7 @@ static struct ConsumerContainer
     LoadConfig config;
     LoadFiles  file;
     LoadFiles *files;
+    DeviceInfo device_info;
 } container;
 
 ConsumerStateHandleState start(EventConsumer *consumer, yaml_event_t *event);
@@ -19,6 +21,9 @@ ConsumerStateHandleState config_values(EventConsumer *consumer, yaml_event_t *ev
 ConsumerStateHandleState config_key(EventConsumer *consumer, yaml_event_t *event);
 ConsumerStateHandleState file_key(EventConsumer *consumer, yaml_event_t *event);
 ConsumerStateHandleState file_value(EventConsumer *consumer, yaml_event_t *event);
+
+ConsumerStateHandleState device_info_key(EventConsumer *consumer, yaml_event_t *event);
+ConsumerStateHandleState device_info_list(EventConsumer *consumer, yaml_event_t *event);
 
 static char *temp_ptr = NULL;
 
@@ -242,10 +247,13 @@ ConsumerStateHandleState config_key(EventConsumer *consumer, yaml_event_t *event
             }
         }
         case YAML_MAPPING_END_EVENT:
-            add_LoadConfig((LoadConfig **)&(consumer->data), container.config.start_file_name, container.files);
+        {
+            SystemBootConfig * system_boot_config = (SystemBootConfig *)consumer->data;
+            add_LoadConfig(&(system_boot_config->load_config), container.config.start_file_name, container.files);
             container.files  = NULL;
             consumer->handle = config_values;
             return STATE_CONFIG_VALUES;
+        }
         default:
         {
             consumer->handle = error;
@@ -260,7 +268,7 @@ ConsumerStateHandleState config_values(EventConsumer *consumer, yaml_event_t *ev
     {
         case YAML_MAPPING_START_EVENT: consumer->handle = config_key; return STATE_CONFIG_KEY;
         case YAML_SEQUENCE_END_EVENT: consumer->handle = config_list; return STATE_CONFIG_LIST;
-        case YAML_MAPPING_END_EVENT: consumer->handle = end; return STATE_END;
+        case YAML_MAPPING_END_EVENT: consumer->handle = section; return STATE_SECTION;
         default:
         {
             consumer->handle = error;
@@ -283,6 +291,131 @@ ConsumerStateHandleState config_list(EventConsumer *consumer, yaml_event_t *even
     }
 }
 
+ConsumerStateHandleState device_info_image_number(EventConsumer *consumer, yaml_event_t *event)
+{
+    switch (event->type)
+    {
+        case YAML_SCALAR_EVENT:
+        {
+            const char *number_str = (char *)event->data.scalar.value;
+            SIZE_T_MACRO value = 0;
+            if (event->data.scalar.length > 2 && number_str[0] == '-')
+            {
+                value = internel_string_to_inter(number_str + 1);
+            }
+            else
+            {
+                value = internel_string_to_inter(number_str);
+            }
+            container.device_info.image_number = value;
+            consumer->handle             = device_info_key;
+            return STATE_FKEY;
+        }
+        default:
+        {
+            consumer->handle = error;
+            return STATE_ERROR;
+        }
+    }
+}
+
+ConsumerStateHandleState device_info_locate(EventConsumer *consumer, yaml_event_t *event)
+{
+    switch (event->type)
+    {
+        case YAML_SCALAR_EVENT:
+        {
+            const char *number_str = (char *)event->data.scalar.value;
+            SIZE_T_MACRO value = 0;
+            if (event->data.scalar.length > 2 && number_str[0] == '-')
+            {
+                value = internel_string_to_inter(number_str + 1);
+            }
+            else
+            {
+                value = internel_string_to_inter(number_str);
+            }
+            container.device_info.loaction = value;
+            consumer->handle             = device_info_key;
+            return STATE_FKEY;
+        }
+        default:
+        {
+            consumer->handle = error;
+            return STATE_ERROR;
+        }
+    }
+}
+
+ConsumerStateHandleState device_map_end(EventConsumer *consumer, yaml_event_t *event)
+{
+    switch (event->type)
+    {
+        case YAML_MAPPING_START_EVENT: consumer->handle = device_info_key; return STATE_CONFIG_KEY;
+        case YAML_SEQUENCE_END_EVENT: consumer->handle = device_info_list; return STATE_CONFIG_LIST;
+        case YAML_MAPPING_END_EVENT: consumer->handle = end; return STATE_END;
+        default:
+        {
+            consumer->handle = error;
+            return STATE_ERROR;
+        }
+    }
+}
+
+ConsumerStateHandleState device_info_key(EventConsumer *consumer, yaml_event_t *event)
+{
+    switch (event->type)
+    {
+        case YAML_SCALAR_EVENT:
+        {
+            temp_ptr = (char *)event->data.scalar.value;
+            if (StrCmpMacro(temp_ptr, "ImageNumber") == 0)
+            {
+                consumer->handle = device_info_image_number;
+                return STATE_DEVICE_INFO_IMAGE_NUMBER;
+            }
+            else if (StrCmpMacro(temp_ptr, "Location") == 0)
+            {
+                consumer->handle = device_info_locate;
+                return STATE_DEVICE_INFO_LOCATION;
+            }
+            else
+            {
+                consumer->handle = error;
+                return STATE_ERROR;
+            }
+        }
+        case YAML_MAPPING_END_EVENT:
+        {
+            SystemBootConfig * system_boot_config = (SystemBootConfig *)consumer->data;
+            add_device_info(&(system_boot_config->device_info), container.device_info.image_number, container.device_info.loaction);
+            container.device_info.image_number = 0;
+            container.device_info.loaction = 0;
+            consumer->handle = device_map_end;
+            return STATE_DEVICE_INFO_VALUES;
+        }
+        default:
+        {
+            consumer->handle = error;
+            return STATE_ERROR;
+        }
+    }
+}
+
+ConsumerStateHandleState device_info_list(EventConsumer *consumer, yaml_event_t *event)
+{
+    switch (event->type)
+    {
+        case YAML_MAPPING_START_EVENT: consumer->handle = device_info_key; return STATE_DEVICE_INFO_VALUES;
+        case YAML_MAPPING_END_EVENT: consumer->handle = section; return STATE_SECTION;
+        default:
+        {
+            consumer->handle = error;
+            return STATE_ERROR;
+        }
+    }
+}
+
 ConsumerStateHandleState section(EventConsumer *consumer, yaml_event_t *event)
 {
     switch (event->type)
@@ -294,6 +427,11 @@ ConsumerStateHandleState section(EventConsumer *consumer, yaml_event_t *event)
             {
                 consumer->handle = config_list;
                 return STATE_CONFIG_LIST;
+            }
+            else if (StrCmpMacro(temp_ptr, "DeviceInfo") == 0)
+            {
+                consumer->handle = device_info_list;
+                return STATE_DEVICE_INFO_LIST;
             }
             else
             {
@@ -360,6 +498,10 @@ void init_consumer(void)
         FreeMemoryMacro(consumer_imp.data);
         consumer_imp.data = NULL;
     }
+    SystemBootConfig *system_boot_config = bail_alloc(sizeof(SystemBootConfig));
+    system_boot_config->load_config = NULL;
+    system_boot_config->device_info = NULL;
+    consumer_imp.data = system_boot_config;
     consumer_imp.handle = start;
 }
 
@@ -382,7 +524,9 @@ void clear_consumer(void)
     }
 
     // destroy_files((&((LoadConfig *)(consumer.data))->files));
-    destroy_load_config((LoadConfig **)(&(consumer_imp.data)));
+    SystemBootConfig * system_boot_config = (SystemBootConfig *)consumer_imp.data;
+    destroy_load_config(&(system_boot_config->load_config));
+    destroy_device_info(&(system_boot_config->device_info));
 
     if (consumer_imp.data)
     {

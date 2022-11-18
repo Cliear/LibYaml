@@ -40,6 +40,11 @@ void add_LoadConfig(LoadConfig **load_config, const char *name, LoadFiles *files
     {
         *load_config = f;
     }
+    else
+    {
+        FreeMemoryMacro((void *)(f->start_file_name));
+        FreeMemoryMacro(f);
+    }
 }
 
 void add_file(LoadFiles **files, const char *name, const char *path, UINTPTR_T_MACRO locate)
@@ -67,6 +72,25 @@ void add_file(LoadFiles **files, const char *name, const char *path, UINTPTR_T_M
     }
 }
 
+void add_device_info(DeviceInfo **device_info, UINTPTR_T_MACRO image_number, UINTPTR_T_MACRO location)
+{
+    /* Create variety object. */
+    DeviceInfo *info = bail_alloc(sizeof(*info));
+    info->image_number = image_number;
+    info->loaction = location;
+
+    if (!*device_info)
+    {
+        *device_info = info;
+    }
+    else
+    {
+        FreeMemoryMacro(info);
+        (*device_info)->image_number = image_number;
+        (*device_info)->loaction = location;
+    }
+}
+
 
 void destroy_files(LoadFiles **files)
 {
@@ -76,7 +100,9 @@ void destroy_files(LoadFiles **files)
         {
             *files = v->next;
             FreeMemoryMacro((void *)(v->name));
+            v->name = NULL;
             FreeMemoryMacro((void *)(v->path));
+            v->path = NULL;
             FreeMemoryMacro(v);
         }
     }
@@ -88,5 +114,15 @@ void destroy_load_config(LoadConfig **config)
     {
         destroy_files(&(*config)->files);
         FreeMemoryMacro((void *)((*config)->start_file_name));
+        (*config)->start_file_name = NULL;
+    }
+}
+
+void destroy_device_info(DeviceInfo **device_info)
+{
+    if (*device_info != NULL)
+    {
+        FreeMemoryMacro((void *)(*device_info));
+        *device_info = NULL;
     }
 }

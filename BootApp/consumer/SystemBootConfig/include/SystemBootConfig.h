@@ -31,6 +31,34 @@ LoadFiles
 #endif
 ;
 
+
+#ifndef __cplusplus
+typedef
+#endif
+struct DeviceInfo
+{
+    SIZE_T_MACRO image_number;
+    SIZE_T_MACRO loaction;
+}
+#ifndef __cplusplus
+DeviceInfo
+#endif
+;
+
+
+#ifndef __cplusplus
+typedef
+#endif
+struct SystemBootConfig
+{
+    LoadConfig * load_config;
+    DeviceInfo * device_info;
+}
+#ifndef __cplusplus
+SystemBootConfig
+#endif
+;
+
 #ifndef __cplusplus
 typedef
 #endif
@@ -54,6 +82,12 @@ enum State
     STATE_FNAME,     /* File name */
     STATE_FPATH,  /* File color value */
     STATE_FMEMORY_LOCATE,  /* File count value */
+
+    STATE_DEVICE_INFO_LIST,
+    STATE_DEVICE_INFO_VALUES,
+    STATE_DEVICE_INFO_KEY,
+    STATE_DEVICE_INFO_IMAGE_NUMBER,
+    STATE_DEVICE_INFO_LOCATION,
 
     STATE_END, /* end state */
 }

@@ -9,3 +9,7 @@ LoadFiles:
     name: Boot
     Path: abc/def.ddd
     MemoryLocate: 0x100000
+---
+DeviceInfo:
+  ImageNumber:  0x55aa55aa
+  Location: 0x0
