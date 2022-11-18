@@ -454,6 +454,15 @@ ConsumerStateHandleState document(EventConsumer *consumer, yaml_event_t *event)
     {
         case YAML_MAPPING_START_EVENT: consumer->handle = section; return STATE_SECTION;
         case YAML_DOCUMENT_END_EVENT: consumer->handle = stream; return STATE_STREAM;
+        case YAML_SCALAR_EVENT:
+        {
+            const char * name = (char *)event->data.scalar.value;
+            if (StrCmpMacro(name, "") == 0)
+            {
+                consumer->handle = document;
+                return STATE_DOCUMENT;
+            }
+        }
         default:
         {
             consumer->handle = error;
