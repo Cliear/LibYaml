@@ -86,14 +86,14 @@ EFI_MEMORY_DESCRIPTOR * get_efi_memory_descriptors(UINTN * descriptor_size, UINT
     return MemMap;
 }
 
-MemoryInfo * get_memory_info(EFI_MEMORY_DESCRIPTOR * efi_memory_descriptors, UINTN descriptor_size, UINTN descriptor_count)
+DeviceMemoryInfo * get_memory_info(EFI_MEMORY_DESCRIPTOR * efi_memory_descriptors, UINTN descriptor_size, UINTN descriptor_count)
 {
     if (descriptor_count == 0)
     {
         return EFI_DEVICE_ERROR;
     }
 
-    MemoryInfo * memory_info = AllocatePool(sizeof(MemoryInfo));
+    DeviceMemoryInfo * memory_info = AllocatePool(sizeof(DeviceMemoryInfo));
     if (memory_info == NULL)
     {   
         Print(L"Alloc Memory failed!!\n");
@@ -122,7 +122,7 @@ MemoryInfo * get_memory_info(EFI_MEMORY_DESCRIPTOR * efi_memory_descriptors, UIN
         {
             UINTN memory_index = memory_info->count;
             MemoryDescriptor * descriptor = memory_info->memory + memory_index;
-            MemoryType current_memory_type = get_memory_type(efi_memory_descriptor->Type);
+            DeviceMemoryType current_memory_type = get_memory_type(efi_memory_descriptor->Type);
             UINTN current_memory_address = efi_memory_descriptor->PhysicalStart;
             UINTN current_memory_size = efi_memory_descriptor->NumberOfPages << EFI_PAGE_SHIFT;
             if (last == 0)

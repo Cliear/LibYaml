@@ -7,7 +7,7 @@
 
 #include <memory_info.h>
 
-static inline MemoryType get_memory_type(EFI_MEMORY_TYPE type)
+static inline DeviceMemoryType get_memory_type(EFI_MEMORY_TYPE type)
 {
     switch (type)
     {
@@ -56,7 +56,7 @@ static inline MemoryType get_memory_type(EFI_MEMORY_TYPE type)
 }
 
 EFI_MEMORY_DESCRIPTOR * get_efi_memory_descriptors(UINTN * descriptor_size, UINTN * count);
-MemoryInfo * get_memory_info(EFI_MEMORY_DESCRIPTOR * memory_descriptors, UINTN descriptor_size, UINTN count);
+DeviceMemoryInfo * get_memory_info(EFI_MEMORY_DESCRIPTOR * memory_descriptors, UINTN descriptor_size, UINTN count);
 
 typedef struct {EFI_MEMORY_TYPE type; UINTN valid;} efi_memory_type_info;
 efi_memory_type_info get_efi_memory_type_in_scope(EFI_MEMORY_DESCRIPTOR * memory_descriptors, UINTN descriptor_size, UINTN count, EFI_PHYSICAL_ADDRESS address, UINTN size);

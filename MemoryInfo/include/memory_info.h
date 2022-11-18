@@ -3,19 +3,19 @@
 
 #include <type.h>
 
-typedef enum { UNUSABLE_MEMORY, RAM_MEMORY, ROM_MEMORY, ACPI_RECLAIM_MEMORY, ACPI_NVS_MEMORY } MemoryType;
+typedef enum { UNUSABLE_MEMORY, RAM_MEMORY, ROM_MEMORY, ACPI_RECLAIM_MEMORY, ACPI_NVS_MEMORY } DeviceMemoryType;
 
 typedef struct
 {
     RegisterSize address;
     RegisterSize size;
-    RegisterSize type;
+    RegisterSize type;  // value is DeviceMemoryType
 } MemoryDescriptor;
 
 typedef struct
 {
     RegisterSize count;
     MemoryDescriptor * memory;
-} MemoryInfo;
+} DeviceMemoryInfo;
 
 #endif

@@ -11,3 +11,4 @@
     env/edk2
     MemoryInfo/include
     MemoryInfo/edk2_include
+    device_boot_info/include
