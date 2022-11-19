@@ -43,14 +43,15 @@ EFI_STATUS UefiMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
     int display_mode_num = init_video(&(boot_info->video));
 
     read_system_file(root, config->load_config->files);
-
-    clear_consumer();
     close_file(root);
     gBS->CloseProtocol(fs, &gEfiSimpleFileSystemProtocolGuid, ImageHandle, NULL);
 
     LoadFiles * startup_file = find_startup_file(config->load_config);
     void (*des_position)() = (void (*)())startup_file->memory_locate;
 
+    clear_consumer();
+
+    Print(L"Set display mode %d\n", display_mode_num);
     SetDisplayMode(display_mode_num);
 
     longjmp(des_position);
@@ -217,6 +218,7 @@ void read_system_file(EFI_FILE_HANDLE root, LoadFiles *file_des)
         FreePool(path);
         file_des = file_des->next;
     }
+    Print(L"Load the system file finished!!\n");
 }
 
 LoadFiles* find_startup_file(LoadConfig * config)
@@ -236,6 +238,7 @@ LoadFiles* find_startup_file(LoadConfig * config)
         {
             return file;
         }
+        file = file->next;
     }
 
     {
